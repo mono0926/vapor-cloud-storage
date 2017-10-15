@@ -1,1 +1,3 @@
-# vapor-cloud-storage
+# VaporCloudStorage
+
+A description of this package.
