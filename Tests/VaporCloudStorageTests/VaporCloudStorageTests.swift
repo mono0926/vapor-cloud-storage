@@ -21,6 +21,11 @@ class VaporCloudStorageTests: XCTestCase {
         XCTAssertEqual(responseGet.status.statusCode, 200)
     }
 
+    func testGetPublicUrl() {
+        XCTAssertEqual(target.getPublicUrl(object: "test/test.png").absoluteString,
+                       "https://storage.googleapis.com/ighost-dev.appspot.com/test/test.png")
+    }
+
 
     static var allTests = [
         ("test", test),

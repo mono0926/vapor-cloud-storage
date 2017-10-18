@@ -13,9 +13,11 @@ public protocol CloudStrageClinet {
               data: Bytes,
               predefinedAcl: String?,
               cacheControl: String?) throws -> Response
+    func getPublicUrl(object: String) -> URL
 }
 
 public struct CloudStrageRestClient: CloudStrageClinet {
+    private let publicImageURL: URL
     private let baseURL: URL
     private let uploadURL: URL
     private let client: ClientFactoryProtocol
@@ -24,8 +26,14 @@ public struct CloudStrageRestClient: CloudStrageClinet {
     public init(bucket: String,
                 client: ClientFactoryProtocol = EngineClientFactory(),
                 logger: LogProtocol = ConsoleLogger(Terminal(arguments: []))) {
-        self.baseURL = URL(string: "https://www.googleapis.com/storage/v1/b/\(bucket)/o")!
-        self.uploadURL = URL(string: "https://www.googleapis.com/upload/storage/v1/b/\(bucket)/o")!
+        publicImageURL = URL(string: "https://storage.googleapis.com")!
+            .appendingPathComponent(bucket)
+        baseURL = URL(string: "https://www.googleapis.com/storage/v1/b")!
+            .appendingPathComponent(bucket)
+            .appendingPathComponent("o")
+        uploadURL = URL(string: "https://www.googleapis.com/upload/storage/v1/b")!
+            .appendingPathComponent(bucket)
+            .appendingPathComponent("o")
         self.client = client
         self.logger = logger
     }
@@ -63,6 +71,10 @@ public struct CloudStrageRestClient: CloudStrageClinet {
         let res = try client.respond(to: request)
         logger.debug(res.body.bytes?.makeString() ?? "")
         return res
+    }
+
+    public func getPublicUrl(object: String) -> URL {
+        return publicImageURL.appendingPathComponent(object)
     }
 
     private func createHeaders(authToken: String) -> [HeaderKey: String] {
