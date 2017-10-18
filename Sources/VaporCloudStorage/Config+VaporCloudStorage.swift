@@ -18,10 +18,10 @@ extension CloudStrageRestClient: ConfigInitializable {
 extension Config {
     public func addConfigurable<
         F: CloudStrageClinet
-        >(storage: @escaping Config.Lazy<F>, name: String) {
-        customAddConfigurable(closure: storage, unique: "storage", name: name)
+        >(cloudStorage: @escaping Config.Lazy<F>, name: String) {
+        customAddConfigurable(closure: cloudStorage, unique: "storage", name: name)
     }
-    public func resolveFirestore() throws -> CloudStrageClinet {
+    public func resolveCloudStorage() throws -> CloudStrageClinet {
         return try customResolve(
             unique: "storage",
             file: "firebase",
