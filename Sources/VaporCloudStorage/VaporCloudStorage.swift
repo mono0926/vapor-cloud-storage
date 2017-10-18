@@ -13,6 +13,9 @@ public protocol CloudStrageClinet {
               data: Bytes,
               predefinedAcl: String?,
               cacheControl: String?) throws -> Response
+
+    func delete(authToken: String,
+                       object: String) throws -> Response
     func getPublicUrl(object: String) -> URL
 }
 
@@ -40,7 +43,8 @@ public struct CloudStrageRestClient: CloudStrageClinet {
 
     public func get(authToken: String,
                     object: String) throws -> Response {
-        let res = try client.get("\(baseURL.absoluteString)/\(object.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)")
+        let res = try client.get("\(baseURL.absoluteString)/\(object.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)",
+            createHeaders(authToken: authToken))
         logger.debug(res.body.bytes?.makeString() ?? "")
         return res
     }
@@ -69,6 +73,14 @@ public struct CloudStrageRestClient: CloudStrageClinet {
                              Part(headers: [:], body: data)
         ]
         let res = try client.respond(to: request)
+        logger.debug(res.body.bytes?.makeString() ?? "")
+        return res
+    }
+
+    public func delete(authToken: String,
+                       object: String) throws -> Response {
+        let res = try client.delete("\(baseURL.absoluteString)/\(object.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)",
+            createHeaders(authToken: authToken))
         logger.debug(res.body.bytes?.makeString() ?? "")
         return res
     }
