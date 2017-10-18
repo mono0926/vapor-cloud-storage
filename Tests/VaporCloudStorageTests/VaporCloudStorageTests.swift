@@ -13,7 +13,7 @@ class VaporCloudStorageTests: XCTestCase {
         let object = "test/test.png"
         let responsePost = try target.post(authToken: authToken,
                                            object: object,
-                                           data: FileManager.default.contents(atPath: "/Users/mono/Desktop/love.png")!.makeBytes(),
+                                           data: FileManager.default.contents(atPath: "/Users/mono/Desktop/love.png")!,
                                            predefinedAcl: "publicRead",
                                            cacheControl: "public, max-age=31536000") // one year
         XCTAssertEqual(responsePost.status.statusCode, 200)

@@ -10,7 +10,7 @@ public protocol CloudStrageClinet {
              object: String) throws -> Response
     func post(authToken: String,
               object: String,
-              data: Bytes,
+              data: Data,
               predefinedAcl: String?,
               cacheControl: String?) throws -> Response
 
@@ -51,7 +51,7 @@ public struct CloudStrageRestClient: CloudStrageClinet {
 
     public func post(authToken: String,
                      object: String,
-                     data: Bytes,
+                     data: Data,
                      predefinedAcl: String? = nil,
                      cacheControl: String? = nil) throws -> Response {
         let request = Request(method: .post,
@@ -70,7 +70,7 @@ public struct CloudStrageRestClient: CloudStrageClinet {
         }
         request.multipart = [Part(headers: ["Content-Type": "application/json"],
                                   body: try json.makeBytes()),
-                             Part(headers: [:], body: data)
+                             Part(headers: [:], body: data.makeBytes())
         ]
         let res = try client.respond(to: request)
         logger.debug(res.body.bytes?.makeString() ?? "")
