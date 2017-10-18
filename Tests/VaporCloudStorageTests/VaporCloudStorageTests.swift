@@ -1,5 +1,6 @@
 import XCTest
 import VaporCloudStorage
+import Foundation
 
 private let bucket = "YOUR_BUCKET"
 private let authToken = "YOUR_AUTH_TOKEN"
@@ -21,6 +22,11 @@ class VaporCloudStorageTests: XCTestCase {
                                          object: object)
         XCTAssertEqual(responseGet.status.statusCode, 200)
 
+        let expected = URL(string: "https://storage.googleapis.com/\(bucket)/\(object)")!
+        XCTAssertEqual(target.getPublicUrl(object: object),
+                       expected)
+        _  = try Data(contentsOf: expected)
+
         let responseDelete = try target.delete(authToken: authToken,
                                             object: object)
         XCTAssertEqual(responseDelete.status.statusCode, 204)
@@ -29,12 +35,6 @@ class VaporCloudStorageTests: XCTestCase {
                                          object: object)
         XCTAssertEqual(responseGet2.status.statusCode, 404)
     }
-
-    func testGetPublicUrl() {
-        XCTAssertEqual(target.getPublicUrl(object: "test/test.png").absoluteString,
-                       "https://storage.googleapis.com/ighost-dev.appspot.com/test/test.png")
-    }
-
 
     static var allTests = [
         ("test", test),
